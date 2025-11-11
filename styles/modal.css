@@ -1,0 +1,279 @@
+:root {
+  /* Colors */
+  --tos-color-surface: #ffffff;
+  --tos-color-text-primary: #222222;
+  --tos-color-text-secondary: #555555;
+  --tos-color-text-muted: #888888;
+  --tos-color-border-light: #f0f0f0;
+  --tos-color-border-medium: #dee2e6;
+  --tos-color-overlay-bg: rgba(0, 0, 0, 0.65);
+  --tos-color-loader-spin: #3498db;
+  --tos-color-loader-bg: #f3f3f3;
+  --tos-color-hover-light: #f9f9f9;
+
+  /* Grade Colors */
+  --tos-color-grade-good: #28a745;
+  --tos-color-grade-neutral: #ffc107;
+  --tos-color-grade-bad: #dc3545;
+
+  /* Error Colors */
+  --tos-color-error-text: #a94442;
+  --tos-color-error-bg: #fbebeb;
+  --tos-color-error-border: #e0b4b4;
+
+  /* Sizing & Spacing */
+  --tos-border-radius: 12px;
+  --tos-padding-base: 24px;
+  --tos-padding-header: 16px;
+
+  /* Fonts */
+  --tos-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --tos-font-size-base: 16px;
+  --tos-font-size-h3: 1.25rem;
+  --tos-font-size-grade: 3.5rem;
+  --tos-font-size-clause: 0.95rem;
+
+  /* Shadows */
+  --tos-shadow-modal: 0 8px 16px rgba(0, 0, 0, 0.1), 0 20px 40px rgba(0, 0, 0, 0.15);
+
+  /* Z-Index (Stacking) */
+  --tos-z-index-overlay: 10000;
+  --tos-z-index-modal: 10001;
+  
+  /* Transitions */
+  --tos-transition-fast: all 0.15s ease-in-out;
+}
+
+
+/* --- 2. 오버레이 및 모달 컨테이너 --- */
+#tos-analyzer-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--tos-color-overlay-bg);
+  z-index: var(--tos-z-index-overlay);
+}
+
+#tos-analyzer-modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: var(--tos-z-index-modal);
+  max-width: 600px;
+  width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* --- 3. 모달 본체 --- */
+.tos-analyzer-modal {
+  background-color: var(--tos-color-surface);
+  border-radius: var(--tos-border-radius);
+  box-shadow: var(--tos-shadow-modal);
+  font-family: var(--tos-font-family);
+  color: var(--tos-color-text-primary);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: var(--tos-font-size-base);
+  line-height: 1.6;
+}
+
+/* --- 4. 헤더 --- */
+.tos-analyzer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--tos-padding-header) var(--tos-padding-base);
+  border-bottom: 1px solid var(--tos-color-border-medium);
+  flex-shrink: 0;
+}
+
+.tos-analyzer-header h3 {
+  margin: 0;
+  font-size: var(--tos-font-size-h3);
+  font-weight: 600;
+  color: var(--tos-color-text-primary);
+  line-height: 1.3;
+}
+
+.tos-close-btn {
+  background: none;
+  border: none;
+  font-size: 2.25rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--tos-color-text-muted);
+  cursor: pointer;
+  padding: 0 4px;
+  border-radius: 4px;
+  transition: var(--tos-transition-fast);
+}
+
+.tos-close-btn:hover {
+  color: var(--tos-color-text-primary);
+  background-color: var(--tos-color-hover-light);
+}
+
+.tos-close-btn:focus-visible {
+  outline: 2px solid var(--tos-color-loader-spin);
+  outline-offset: 2px;
+  color: var(--tos-color-text-primary);
+}
+
+
+/* --- 5. 바디 --- */
+.tos-analyzer-body {
+  padding: var(--tos-padding-base);
+  overflow-y: auto;
+  text-align: center;
+}
+.tos-analyzer-body::-webkit-scrollbar {
+  width: 8px;
+}
+.tos-analyzer-body::-webkit-scrollbar-track {
+  background: var(--tos-color-border-light);
+  border-radius: 4px;
+}
+.tos-analyzer-body::-webkit-scrollbar-thumb {
+  background-color: var(--tos-color-border-medium);
+  border-radius: 4px;
+}
+.tos-analyzer-body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--tos-color-text-muted);
+}
+
+
+/* --- 6. 로딩 및 에러 상태 --- */
+.loader {
+  border: 6px solid var(--tos-color-loader-bg);
+  border-top-color: var(--tos-color-loader-spin);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+  transform: translateZ(0);
+}
+
+/* 접근성: 모션 줄이기 */
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    animation: none;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-body pre {
+  background-color: var(--tos-color-error-bg);
+  border: 1px solid var(--tos-color-error-border);
+  color: var(--tos-color-error-text);
+  padding: 16px;
+  border-radius: 6px;
+  text-align: left;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  user-select: all;
+}
+
+
+/* --- 7. 결과 UI --- */
+.tos-overall-section {
+  text-align: center;
+  margin-bottom: var(--tos-padding-base);
+  padding-bottom: var(--tos-padding-base);
+  border-bottom: 1px solid var(--tos-color-border-light);
+}
+
+.tos-overall-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--tos-color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tos-overall-grade {
+  font-size: var(--tos-font-size-grade);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 변수를 사용한 등급 색상 */
+.grade-good { color: var(--tos-color-grade-good); }
+.grade-neutral { color: var(--tos-color-grade-neutral); }
+.grade-bad { color: var(--tos-color-grade-bad); }
+
+.tos-clauses-section {
+  text-align: left;
+}
+
+.tos-clauses-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--tos-color-text-primary);
+}
+
+.tos-clauses-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 350px;
+  overflow-y: auto;
+}
+.tos-clauses-list::-webkit-scrollbar {
+  width: 8px;
+}
+.tos-clauses-list::-webkit-scrollbar-track {
+  background: var(--tos-color-border-light);
+  border-radius: 4px;
+}
+.tos-clauses-list::-webkit-scrollbar-thumb {
+  background-color: var(--tos-color-border-medium);
+  border-radius: 4px;
+}
+.tos-clauses-list::-webkit-scrollbar-thumb:hover {
+  background-color: var(--tos-color-text-muted);
+}
+
+
+.tos-clause-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--tos-color-border-light);
+  transition: var(--tos-transition-fast);
+}
+.tos-clause-item:last-child {
+  border-bottom: none;
+}
+.tos-clause-item:hover {
+  background-color: var(--tos-color-hover-light);
+}
+
+.tos-clause-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tos-clause-item p {
+  margin: 0;
+  font-size: var(--tos-font-size-clause);
+  line-height: 1.6;
+  color: var(--tos-color-text-secondary); 
+}
