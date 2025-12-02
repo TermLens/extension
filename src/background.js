@@ -10,7 +10,7 @@ chrome.action.onClicked.addListener((tab) => {
 
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    files: ['src/ui.js', 'src/content.js']
+    files: ['src/ui.js', 'src/darkPatterns.js', 'src/content.js']
   });
 });
 
