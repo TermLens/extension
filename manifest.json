@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "TOS Analyzer",
-  "version": "1.0",
-  "description": "현재 페이지의 서비스 약관을 분석하고 요약합니다.",
+  "version": "1.3",
+  "description": "서비스 약관 분석 및 다크 패턴 감지",
   "permissions": [
     "activeTab",
     "scripting"
@@ -11,7 +11,7 @@
     "__Server__"
   ],
   "action": {
-    "default_title": "현재 페이지 약관 분석"
+    "default_title": "현재 페이지 약관 분석 및 다크 패턴 감지"
   },
   "background": {
     "service_worker": "src/background.js"
