@@ -87,3 +87,4 @@ if (typeof window.termLensUi === 'undefined') {
     return { MODAL_ID, showLoadingModal, showResultsModal, showError, removeModal };
   })();
 }
+
