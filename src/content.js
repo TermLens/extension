@@ -1,4 +1,4 @@
-// 약관 분석 요청 및 결과 표시
+// 약관 분석 요청 및 결과 표시 + 필수 항목 자동 체크
 
 (function () {
   function autoCheckAgreements() {
@@ -63,8 +63,10 @@
   }
 
   const ui = window.termLensUi;
-  if (!ui) {
-    console.error('TermLens: UI 모듈이 로드되지 않았습니다.');
+  const scanner = window.DarkPatternScanner;
+
+  if (!ui || !scanner) {
+    console.error('[TermLens] 필수 모듈 로드 실패');
     return;
   }
 
@@ -76,7 +78,14 @@
 
   ui.showLoadingModal();
 
-  // HTML 전체 전송
+  // 다크 패턴 스캔
+  try {
+    scanner.scan();
+  } catch (e) {
+    console.error('[TermLens] 스캔 중 오류:', e);
+  }
+
+  // HTML 전송
   const pageHtml = document.documentElement.outerHTML;
   chrome.runtime.sendMessage({ type: 'analyzePage', html: pageHtml });
 
