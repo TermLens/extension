@@ -118,6 +118,7 @@
   background-color: var(--tos-color-hover-light);
 }
 
+/* 접근성: 키보드 포커스 스타일 */
 .tos-close-btn:focus-visible {
   outline: 2px solid var(--tos-color-loader-spin);
   outline-offset: 2px;
@@ -125,7 +126,7 @@
 }
 
 
-/* --- 5. 바디 --- */
+/* --- 5. 바디 (컨텐츠 영역) --- */
 .tos-analyzer-body {
   padding: var(--tos-padding-base);
   overflow-y: auto;
@@ -276,4 +277,42 @@
   font-size: var(--tos-font-size-clause);
   line-height: 1.6;
   color: var(--tos-color-text-secondary); 
+}
+
+
+/* --- 다크 패턴 하이라이트 스타일 --- */
+
+/* 1. 텍스트 하이라이트 */
+.tos-dp-highlight {
+  position: relative; cursor: help; border-radius: 2px; font-weight: 600; transition: background-color 0.2s;
+}
+
+/* 2. 시각적 속임수 하이라이트 */
+.tos-visual-trick {
+  position: relative;
+  border: 2px dashed #dc3545 !important; /* 빨간 점선 테두리 */
+  background-color: rgba(255, 255, 0, 0.2) !important; /* 노란 배경 */
+  color: #000 !important; /* 글자색 강제 검정 */
+  opacity: 1 !important;  /* 투명도 제거 */
+  font-size: 14px !important; /* 폰트 크기 강제 확대 */
+  cursor: help;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.4);
+}
+
+/* 3. 공통 툴팁 스타일 */
+.tos-dp-highlight:hover::after,
+.tos-visual-trick:hover::after {
+  content: "⚠️ " attr(data-dp-type);
+  position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+  margin-bottom: 8px; background-color: #333; color: #fff;
+  padding: 6px 10px; border-radius: 4px; font-size: 12px;
+  white-space: nowrap; z-index: 2147483647; pointer-events: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-weight: normal;
+}
+
+/* 툴팁 화살표 */
+.tos-dp-highlight:hover::before,
+.tos-visual-trick:hover::before {
+  content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: #333; margin-bottom: -4px; z-index: 2147483647;
 }
