@@ -262,11 +262,21 @@
   border-radius: 8px;
   background: #ffffff;
   border: 1px solid var(--tos-color-border-light);
+  cursor: pointer;
+  transition: var(--tos-transition-fast);
 }
 
 .tos-distribution-item.good { border-color: rgba(40, 167, 69, 0.16); }
 .tos-distribution-item.neutral { border-color: rgba(255, 193, 7, 0.22); }
 .tos-distribution-item.bad { border-color: rgba(220, 53, 69, 0.18); }
+
+.tos-distribution-item.active {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.04);
+  background: #f0f4ff;
+}
+.tos-distribution-item.good.active { border-color: rgba(40, 167, 69, 0.35); background: #f3fbf6; }
+.tos-distribution-item.neutral.active { border-color: rgba(255, 193, 7, 0.4); background: #fff9e9; }
+.tos-distribution-item.bad.active { border-color: rgba(220, 53, 69, 0.4); background: #fff3f3; }
 
 .tos-distribution-icon img {
   width: 22px;
