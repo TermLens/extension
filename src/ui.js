@@ -25,6 +25,19 @@ if (typeof window.termLensUi === 'undefined') {
       return 'grade-bad';
     }
 
+    function countEvaluations(clauses = []) {
+      return clauses.reduce(
+        (acc, clause) => {
+          const key = (clause?.evaluation || '').toLowerCase();
+          if (key === 'good' || key === 'neutral' || key === 'bad') {
+            acc[key] += 1;
+          }
+          return acc;
+        },
+        { good: 0, neutral: 0, bad: 0 }
+      );
+    }
+
     function createContainer() {
       const overlay = document.createElement('div');
       overlay.id = OVERLAY_ID;
@@ -66,6 +79,26 @@ if (typeof window.termLensUi === 'undefined') {
       const grade = data.overall_evaluation || 'N/A';
       const safeGrade = escapeHtml(grade);
       const clauses = data.evaluation_for_each_clause || [];
+      const counts = countEvaluations(clauses);
+
+      const distribution = `
+        <div class="tos-distribution" role="list" aria-label="조항 평가 분포">
+          ${['good', 'neutral', 'bad']
+            .map((type) => {
+              const label = type === 'good' ? '좋음' : type === 'bad' ? '나쁨' : '중립';
+              return `
+                <div class="tos-distribution-item ${type}" role="listitem">
+                  <div class="tos-distribution-icon">
+                    <img src="${getIconUrl(type)}" alt="${label}" />
+                  </div>
+                  <div class="tos-distribution-info">
+                    <span class="tos-distribution-label">${label}</span>
+                    <span class="tos-distribution-count">${counts[type]}개</span>
+                  </div>
+                </div>`;
+            })
+            .join('')}
+        </div>`;
       const list = clauses.length
         ? clauses.map((c, idx) => {
             const category = escapeHtml(c.category || '카테고리 미제공');
@@ -80,7 +113,7 @@ if (typeof window.termLensUi === 'undefined') {
                     <span class="tos-category-badge">${category}</span>
                     <div class="tos-reason" aria-labelledby="${reasonId}">
                       <button class="tos-reason-btn" type="button" aria-expanded="false" aria-controls="${reasonId}">
-                        이유 보기
+                        평가 근거
                       </button>
                       <div class="tos-reason-popover" id="${reasonId}" role="tooltip">
                         ${reasoning}
@@ -101,8 +134,13 @@ if (typeof window.termLensUi === 'undefined') {
           </div>
           <div class="tos-analyzer-body">
             <div class="tos-overall-section">
-              <h4>종합 평가</h4>
-              <div class="tos-overall-grade ${gradeClass(grade)}">${safeGrade}</div>
+              <div class="tos-overall-head">
+                <h4>종합 평가</h4>
+              </div>
+              <div class="tos-overall-wrap">
+                <div class="tos-overall-grade ${gradeClass(grade)}">${safeGrade}</div>
+                ${distribution}
+              </div>
             </div>
             <div class="tos-clauses-section">
               <h4>주요 조항 요약</h4>
