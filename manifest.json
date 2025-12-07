@@ -8,7 +8,7 @@
     "scripting"
   ],
   "host_permissions": [
-    "__Server__"
+    "https://aitzlxvru2dsqoa4guq44qdfsy0fpuvo.lambda-url.us-west-2.on.aws/"
   ],
   "action": {
     "default_title": "현재 페이지 약관 분석 및 다크 패턴 감지"

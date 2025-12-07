@@ -1,6 +1,6 @@
 // 서버로 HTML을 전송하고 결과를 받아오는 백그라운드 스크립트
 
-const API_ENDPOINT = '__Server__';
+const API_ENDPOINT = 'https://aitzlxvru2dsqoa4guq44qdfsy0fpuvo.lambda-url.us-west-2.on.aws/';
 
 chrome.action.onClicked.addListener((tab) => {
   chrome.scripting.insertCSS({

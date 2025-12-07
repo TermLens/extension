@@ -5,6 +5,15 @@ if (typeof window.termLensUi === 'undefined') {
     const MODAL_ID = 'tos-analyzer-modal-container';
     const OVERLAY_ID = 'tos-analyzer-overlay';
 
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function getIconUrl(evalType) {
       const name = evalType === 'good' ? 'good.png' : evalType === 'bad' ? 'bad.png' : 'neutral.png';
       return chrome.runtime.getURL(`icons/${name}`);
@@ -55,14 +64,34 @@ if (typeof window.termLensUi === 'undefined') {
     function showResultsModal(data) {
       const m = document.getElementById(MODAL_ID) || createContainer();
       const grade = data.overall_evaluation || 'N/A';
+      const safeGrade = escapeHtml(grade);
       const clauses = data.evaluation_for_each_clause || [];
       const list = clauses.length
-        ? clauses.map(c => `
-            <li class="tos-clause-item">
-              <img src="${getIconUrl(c.evaluation)}" class="tos-clause-icon" />
-              <p>${c.summarized_clause}</p>
-            </li>`).join('')
-        : '<li>분석된 조항이 없습니다.</li>';
+        ? clauses.map((c, idx) => {
+            const category = escapeHtml(c.category || '카테고리 미제공');
+            const reasoning = escapeHtml(c.reasoning || '추가 설명이 없습니다.');
+            const summary = escapeHtml(c.summarized_clause || '요약이 제공되지 않았습니다.');
+            const reasonId = `tos-reason-${idx}`;
+            return `
+              <li class="tos-clause-item">
+                <img src="${getIconUrl(c.evaluation)}" class="tos-clause-icon" />
+                <div class="tos-clause-content">
+                  <div class="tos-clause-top">
+                    <span class="tos-category-badge">${category}</span>
+                    <div class="tos-reason" aria-labelledby="${reasonId}">
+                      <button class="tos-reason-btn" type="button" aria-expanded="false" aria-controls="${reasonId}">
+                        이유 보기
+                      </button>
+                      <div class="tos-reason-popover" id="${reasonId}" role="tooltip">
+                        ${reasoning}
+                      </div>
+                    </div>
+                  </div>
+                  <p class="tos-clause-summary">${summary}</p>
+                </div>
+              </li>`;
+          }).join('')
+        : '<li class="tos-clause-item empty">분석된 조항이 없습니다.</li>';
 
       m.innerHTML = `
         <div class="tos-analyzer-modal">
@@ -73,7 +102,7 @@ if (typeof window.termLensUi === 'undefined') {
           <div class="tos-analyzer-body">
             <div class="tos-overall-section">
               <h4>종합 평가</h4>
-              <div class="tos-overall-grade ${gradeClass(grade)}">${grade}</div>
+              <div class="tos-overall-grade ${gradeClass(grade)}">${safeGrade}</div>
             </div>
             <div class="tos-clauses-section">
               <h4>주요 조항 요약</h4>
@@ -82,9 +111,24 @@ if (typeof window.termLensUi === 'undefined') {
           </div>
         </div>`;
       document.getElementById('close-btn').onclick = removeModal;
+
+      m.querySelectorAll('.tos-reason-btn').forEach(btn => {
+        const wrapper = btn.closest('.tos-reason');
+        if (!wrapper) return;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = wrapper.classList.toggle('open');
+          btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        btn.addEventListener('blur', () => {
+          wrapper.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+        btn.addEventListener('mouseenter', () => wrapper.classList.add('open'));
+        btn.addEventListener('mouseleave', () => wrapper.classList.remove('open'));
+      });
     }
 
     return { MODAL_ID, showLoadingModal, showResultsModal, showError, removeModal };
   })();
 }
-
